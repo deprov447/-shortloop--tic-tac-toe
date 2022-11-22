@@ -11,6 +11,7 @@ const move = require("./business/move");
 const stateGame = require("./business/stateGame");
 const abortGame = require("./business/abortGame");
 const checkInvalidGame = require("./business/checkInvalidGame");
+const undoMove = require("./business/undoMove");
 
 // takes player id, gives game id
 app.post("/game/new", createNewGame);
@@ -20,6 +21,9 @@ app.post("/game/:gameId/join", checkInvalidGame, joinPlayer);
 
 // move
 app.post("/game/:gameId/move", checkInvalidGame, move);
+
+// undo
+app.get("/game/:gameId/undo", checkInvalidGame, undoMove);
 
 // return game status
 app.get("/game/:gameId/status", checkInvalidGame, stateGame);

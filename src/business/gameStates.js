@@ -9,7 +9,8 @@ const gameStates = [
 
 class Game {
   constructor() {
-    this.isPlayerBThere = false
+    this.moves = [];
+    this.isPlayerBThere = false;
     this.currGameState = 0;
     this.playerMove = false;
     this.gameGrid = [

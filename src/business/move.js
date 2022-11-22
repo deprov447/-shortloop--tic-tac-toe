@@ -11,38 +11,62 @@ const responses = [
 
 const rowCheck = (grid, char) => {
   for (let i = 0; i < 5; ++i) {
-    let full = true;
-    for (let j = 0; j < 5; ++j) if (grid[i][j] !== char) full = false;
-    if (full) return true;
+    let last = false;
+    let secondLast = false;
+    for (let j = 0; j < 5; ++j) {
+      if (grid[i][j] === char) {
+        if (last && secondLast) return true;
+      }
+      secondLast = last;
+      last = grid[i][j] === char;
+    }
   }
+  return false;
 };
 
 const colCheck = (grid, char) => {
   for (let i = 0; i < 5; ++i) {
-    let full = true;
-    for (let j = 0; j < 5; ++j) if (grid[j][i] !== char) full = false;
-    if (full) return true;
+    let last = false;
+    let secondLast = false;
+    for (let j = 0; j < 5; ++j) {
+      if (grid[j][i] === char) {
+        if (last && secondLast) return true;
+      }
+      secondLast = last;
+      last = grid[j][i] === char;
+    }
   }
+  return false;
 };
 
 const diagACheck = (grid, char) => {
-  return !(
-    grid[0][0] !== char ||
-    grid[1][1] !== char ||
-    grid[2][2] !== char ||
-    grid[3][3] !== char ||
-    grid[4][4] !== char
-  );
+  let last = false;
+  let secondLast = false;
+  for (let i = 0; i < 5; ++i) {
+    if (grid[i][i] === char) {
+      if (last && secondLast) {
+        return true;
+      }
+    }
+    secondLast = last;
+    last = grid[i][i] === char;
+  }
+  return false;
 };
 
 const diagBCheck = (grid, char) => {
-  return !(
-    grid[0][4] !== char ||
-    grid[1][3] !== char ||
-    grid[2][2] !== char ||
-    grid[3][1] !== char ||
-    grid[4][0] !== char
-  );
+  let last = false;
+  let secondLast = false;
+  for (let i = 0; i < 5; ++i) {
+    if (grid[i][4 - i] === char) {
+      if (last && secondLast) {
+        return true;
+      }
+    }
+    secondLast = last;
+    last = grid[i][4 - i] === char;
+  }
+  return false;
 };
 
 const someoneWon = (grid) => {
@@ -69,13 +93,14 @@ const move = (req, res) => {
     res.send(responses[5]);
   } else {
     games[gameId].gameGrid[moveX][moveY] = games[gameId].playerMove ? "*" : "o";
+    games[gameId].moves.push({ x: moveX, y: moveY });
     console.log(games[gameId].gameGrid);
     if (someoneWon(games[gameId].gameGrid)) {
       games[gameId].currGameState = 2 + games[gameId].playerMove;
       res.send(responses[games[gameId].currGameState]);
-    } else if (draw(grid)) {
-      games[gameId].currGameState = 4;
-      res.send(responses[4]);
+      // } else if (draw(grid)) {
+      //   games[gameId].currGameState = 4;
+      //   res.send(responses[4]);
     } else {
       games[gameId].playerMove = !games[gameId].playerMove;
       res.send(responses[0 + games[gameId].playerMove]);
